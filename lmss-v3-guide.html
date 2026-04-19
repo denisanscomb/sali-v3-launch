@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<!--
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  LMSS V3 Guide — sali.org WordPress integration version                    ║
+║  ─────────────────────────────────────────────────────────────────────────  ║
+║  Site: WordPress 6.x · Astra theme 4.12.4 · Elementor Pro 3.35.x           ║
+║                                                                              ║
+║  TO INTEGRATE THIS PAGE:                                                     ║
+║                                                                              ║
+║  1. HEADER / FOOTER                                                          ║
+║     The <header> and <footer> blocks here are static stand-ins that         ║
+║     replicate the live site header and footer for preview purposes.          ║
+║     When adding to WordPress, replace them with template parts:             ║
+║       • <header>…</header>  →  <?php get_header(); ?>                       ║
+║       • <footer>…</footer>  →  <?php get_footer(); ?>                       ║
+║     The Elementor header (template ID 24) and footer (template ID 40)       ║
+║     will then be injected automatically.                                     ║
+║                                                                              ║
+║  2. STYLESHEETS                                                              ║
+║     The <link> tags for Astra, Elementor, and Google Fonts in <head>        ║
+║     are already loaded site-wide — do not copy them into the page.          ║
+║     Only the <style id="lmss-v3-guide-styles"> block is page-specific       ║
+║     and should be added via Elementor > Custom CSS or a child theme.        ║
+║                                                                              ║
+║  3. PAGE CONTENT                                                             ║
+║     Everything between the WP HEADER and WP FOOTER comment markers         ║
+║     is the page content. It can be pasted into an Elementor HTML widget,   ║
+║     a Full Width page template, or a Custom Post Type template.             ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+-->
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LMSS V3 Guide — SALI Alliance</title>
+
+<!-- ─── FONTS (already loaded site-wide — remove when integrating into WP) ─── -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700,800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,500,600,700&display=swap" rel="stylesheet">
+
+<!-- ─── PAGE-SPECIFIC STYLES ─── -->
+<!-- When integrating: add the contents of this block via Elementor > Custom CSS -->
+<style id="lmss-v3-guide-styles">
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ══════════════════════════════════════════
+   DESIGN TOKENS — sali.org Elementor Kit
+   Source: /wp-content/uploads/elementor/css/post-6.css
+══════════════════════════════════════════ */
+:root {
+  /* Brand palette (Elementor Kit post-6.css) */
+  --orange:       #F46C11;   /* --e-global-color-primary   */
+  --orange-hover: #F49611;   /* --e-global-color-ce4897a   */
+  --orange-bright:#FF7D1D;   /* --e-global-color-9eb84b5   */
+  --blue:         #224AA7;   /* --e-global-color-secondary */
+  --blue-text:    #2B72B9;   /* --e-global-color-text      */
+  --teal:         #32C39F;   /* --e-global-color-accent     */
+  --navy:         #00082B;   /* --e-global-color-5959008   */
+  --text:         #222221;   /* --e-global-color-0b989a4   */
+  --gray:         #555A5A;   /* --e-global-color-0550ad6   */
+  --gray-mid:     #A2AAAA;   /* --e-global-color-d589710   */
+  --border:       #DBD9D8;   /* --e-global-color-89905bd   */
+  --bg:           #F6F5F5;   /* --e-global-color-0e9b66e   */
+  --white:        #FFFFFF;   /* --e-global-color-6c67244   */
+
+  /* Layout */
+  --max-width: 1140px;
+  --radius: 4px;
+
+  /* Derived */
+  --text-secondary: var(--gray);
+}
+
+/* ── Base ── */
+body {
+  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--text);
+  background: var(--bg);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', 'Open Sans', sans-serif;
+}
+
+a { color: var(--blue-text); text-decoration: none; }
+a:hover { color: var(--orange); text-decoration: none; }
+
+/* ── Skip link ── */
+.skip-link {
+  position: absolute; left: -9999px; top: 0;
+  background: var(--blue); color: #fff;
+  padding: 8px 16px; z-index: 9999;
+}
+.skip-link:focus { left: 0; }
+
+/* ══════════════════════════════════════════
+   HEADER / NAV
+   Matches: post-24.css (Elementor header template ID 24)
+   background-color: #ffffff
+   box-shadow: 0px 0px 24px 0px rgba(0,0,0,0.15)
+   Nav: Montserrat 14px 700 uppercase, color #555A5A, hover #F46C11
+══════════════════════════════════════════ */
+.site-header {
+  background: #ffffff;
+  box-shadow: 0px 0px 24px 0px rgba(0,0,0,0.15);
+  position: sticky; top: 0; z-index: 100;
+}
+
+.header-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 15px 32px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.site-logo img {
+  width: 170px;
+  height: auto;
+  display: block;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex: 1;
+}
+
+.site-nav a {
+  color: var(--gray);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 14px 10px;
+  transition: color 0.15s;
+  white-space: nowrap;
+}
+
+.site-nav a:hover,
+.site-nav a.active { color: var(--orange); }
+
+.site-nav a.nav-highlight { color: var(--orange); }
+.site-nav a.nav-highlight:hover { color: var(--orange-hover); }
+
+.header-cta {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Orange pill button — matches .elementor-element-349747da in post-24.css */
+.btn-pill {
+  display: inline-block;
+  background: var(--orange);
+  color: #fff !important;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 100px;
+  padding: 10px 28px;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.btn-pill:hover { background: var(--orange-hover); }
+
+/* ══════════════════════════════════════════
+   HERO
+══════════════════════════════════════════ */
+.hero {
+  background: var(--navy);
+  padding: 80px 32px 72px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 120% 80% at 50% 120%, rgba(34,74,167,0.3) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  display: inline-block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.hero h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.1;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.hero-sub {
+  font-size: 18px;
+  color: rgba(255,255,255,0.65);
+  max-width: 600px;
+  margin: 0 auto 36px;
+  line-height: 1.6;
+  font-weight: 400;
+  position: relative;
+}
+
+.btn-hero {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--orange);
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 12px 32px;
+  border-radius: 100px;
+  transition: background 0.15s;
+  position: relative;
+}
+.btn-hero:hover { background: var(--orange-hover); color: #fff; }
+.btn-hero svg { flex-shrink: 0; }
+
+/* ══════════════════════════════════════════
+   TWO-PATH INTRO
+══════════════════════════════════════════ */
+.two-paths {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 56px 32px;
+}
+
+.two-paths-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+
+.path-card {
+  padding: 36px 40px;
+  position: relative;
+}
+
+.path-card:first-child {
+  border-right: 1px solid var(--border);
+}
+
+.path-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--orange);
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.path-card h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 12px;
+}
+
+.path-card p {
+  font-size: 16px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+/* ══════════════════════════════════════════
+   PART DIVIDERS
+══════════════════════════════════════════ */
+.part-divider {
+  background: var(--blue);
+  padding: 0 32px;
+}
+
+.part-divider-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.part-num {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  white-space: nowrap;
+}
+
+.part-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.part-rule {
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.2);
+}
+
+/* ══════════════════════════════════════════
+   CONTENT SECTIONS
+══════════════════════════════════════════ */
+.section-stripe {
+  padding: 72px 32px;
+  background: var(--bg);
+}
+
+.section-stripe.alt {
+  background: var(--white);
+}
+
+.section-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.section-label {
+  display: inline-block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 2px;
+  margin-bottom: 16px;
+}
+
+.sl-blue    { background: rgba(34,74,167,0.1);  color: var(--blue); }
+.sl-teal    { background: rgba(50,195,159,0.12); color: #1d9070; }
+.sl-orange  { background: rgba(244,108,17,0.1);  color: #c25208; }
+
+.section-inner h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 16px;
+  line-height: 1.3;
+}
+
+.section-intro {
+  font-size: 17px;
+  color: var(--text-secondary);
+  max-width: 700px;
+  margin-bottom: 40px;
+  line-height: 1.65;
+}
+
+/* ── Prose ── */
+.prose {
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--text);
+}
+
+.prose p { margin-bottom: 16px; }
+.prose h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 28px 0 10px;
+}
+.prose ul { padding-left: 20px; margin-bottom: 16px; }
+.prose li { margin-bottom: 8px; }
+
+/* ── Info callout ── */
+.info-callout {
+  background: rgba(34,74,167,0.06);
+  border-left: 3px solid var(--blue);
+  padding: 16px 20px;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  margin-top: 24px;
+}
+.info-callout p {
+  font-size: 15px;
+  color: var(--text);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ── Access table ── */
+.access-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 24px;
+  font-size: 15px;
+}
+
+.access-table th {
+  text-align: left;
+  padding: 10px 16px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--white);
+  background: var(--navy);
+}
+
+.access-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+.access-table tr:last-child td { border-bottom: none; }
+.access-table tr:nth-child(odd) td { background: rgba(0,0,0,0.015); }
+
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px 4px 8px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+.role-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+.role-reader    { background: rgba(50,195,159,0.12); color: #1d9070; }
+.role-reader    .role-dot { background: #32C39F; }
+.role-commenter { background: rgba(244,108,17,0.10); color: #b84f0f; }
+.role-commenter .role-dot { background: var(--orange); }
+.role-editor    { background: rgba(34,74,167,0.10); color: var(--blue); }
+.role-editor    .role-dot { background: var(--blue); }
+
+/* ── Lifecycle ── */
+.lifecycle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 32px 0 40px;
+  flex-wrap: wrap;
+}
+
+.lc-step { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+
+.lc-node {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.lc-beta     { background: rgba(244,108,17,0.12); color: #b84f0f;  border: 2px solid var(--orange); }
+.lc-rfc      { background: rgba(34,74,167,0.12);  color: var(--blue); border: 2px solid var(--blue); }
+.lc-accepted { background: rgba(50,195,159,0.15); color: #1d9070;  border: 2px solid var(--teal); }
+.lc-withdrawn{ background: rgba(85,90,90,0.1);    color: var(--gray); border: 2px solid var(--gray-mid); }
+
+.lc-label { font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; color: var(--navy); }
+.lc-desc  { font-size: 11px; color: var(--text-secondary); text-align: center; max-width: 80px; }
+
+.lc-arrow { font-size: 20px; color: var(--border); align-self: flex-start; padding-top: 22px; }
+
+.lifecycle-notes {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.lc-note {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.lc-note-head { margin-bottom: 10px; }
+
+.lc-note-badge {
+  display: inline-block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 2px;
+}
+.nb-beta     { background: rgba(244,108,17,0.12); color: #b84f0f; }
+.nb-rfc      { background: rgba(34,74,167,0.12);  color: var(--blue); }
+.nb-accepted { background: rgba(50,195,159,0.15); color: #1d9070; }
+.nb-withdrawn{ background: rgba(85,90,90,0.1);    color: var(--gray); }
+
+.lc-note p { font-size: 14px; color: var(--text); line-height: 1.6; }
+
+/* ── Split layout ── */
+.split-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+}
+
+.split-layout.flip { direction: rtl; }
+.split-layout.flip > * { direction: ltr; }
+
+/* ══════════════════════════════════════════
+   LMSS VIEWER MOCKUPS
+   Colours match actual Viewer UI
+══════════════════════════════════════════ */
+.mockup-wrap {
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  font-size: 13px;
+  background: #fff;
+}
+
+.mockup-chrome {
+  background: #e8e8e8;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chrome-dot {
+  width: 11px; height: 11px;
+  border-radius: 50%;
+}
+.chrome-dot.r { background: #ff5f57; }
+.chrome-dot.y { background: #ffbd2e; }
+.chrome-dot.g { background: #28c840; }
+
+.chrome-url {
+  background: #fff;
+  border-radius: 4px;
+  padding: 3px 12px;
+  font-size: 11px;
+  color: #555;
+  margin: 0 auto;
+}
+
+/* Toolbar */
+.mk-toolbar {
+  background: hsl(263 70% 18%);
+  padding: 7px 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.mk-tb-logo {
+  display: flex; align-items: center; gap: 6px; margin-right: 4px;
+}
+.mk-tb-logo-img { height: 18px; width: auto; }
+.mk-tb-appname  { color: rgba(255,255,255,0.8); font-weight: 700; font-size: 12px; }
+
+.mk-tb-branch {
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.8);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 2px;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.mk-tb-select {
+  color: rgba(255,255,255,0.65);
+  font-size: 11px;
+  padding: 3px 7px;
+  border-radius: 2px;
+  border: 1px solid rgba(255,255,255,0.18);
+  cursor: pointer;
+}
+
+.mk-tb-search {
+  display: flex; align-items: center; gap: 0;
+  margin-left: auto;
+}
+.mk-tb-search-input {
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.5);
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 2px 0 0 2px;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-right: none;
+  width: 130px;
+}
+.mk-tb-search-btn {
+  background: hsl(263 70% 58%);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 0 2px 2px 0;
+  cursor: pointer;
+}
+
+.mk-tb-btn {
+  color: rgba(255,255,255,0.65);
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 2px;
+  border: 1px solid rgba(255,255,255,0.15);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.mk-tb-btn.active {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border-color: rgba(255,255,255,0.3);
+}
+.mk-tb-badge {
+  display: inline-block;
+  background: hsl(263 70% 58%);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 10px;
+  margin-left: 3px;
+  vertical-align: middle;
+}
+
+.mk-tb-spacer { flex: 1; }
+
+/* RFC banner */
+.mk-rfc-banner {
+  background: #e8f5f1;
+  border-bottom: 1px solid #bde5d8;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 11px;
+}
+
+.mk-rfc-open {
+  background: #32C39F;
+  color: #fff;
+  font-weight: 700;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.mk-rfc-title { color: #1d5c47; font-weight: 500; flex: 1; min-width: 180px; }
+
+.mk-rfc-chips { display: flex; gap: 4px; flex-wrap: wrap; }
+.mk-rfc-chip {
+  background: rgba(50,195,159,0.15);
+  color: #1d7a5f;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 2px;
+}
+
+.mk-rfc-deadline { color: #2d7a5f; font-size: 11px; white-space: nowrap; }
+.mk-rfc-x { color: #999; cursor: pointer; padding: 0 4px; }
+
+/* App body */
+.mk-viewer {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 220px;
+}
+
+/* Tree */
+.mk-tree {
+  border-right: 1px solid #e8e8e8;
+  background: #fafafa;
+  padding: 8px 0;
+}
+
+.mk-tree-header {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #999;
+  padding: 4px 12px 8px;
+}
+
+.mk-tree-item {
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  font-size: 11px;
+  color: #444;
+  line-height: 1.3;
+}
+.mk-tree-item.active { background: rgba(99,65,197,0.08); }
+.mk-tree-item:hover  { background: #f0f0f0; }
+
+.mk-tree-indent-1 { padding-left: 8px; }
+.mk-tree-indent-2 { padding-left: 20px; }
+.mk-tree-indent-3 { padding-left: 32px; }
+.mk-tree-indent-4 { padding-left: 44px; }
+
+.mk-tree-toggle { font-size: 9px; color: #aaa; width: 10px; flex-shrink: 0; }
+.mk-tree-name   { flex: 1; }
+.mk-tree-count  { font-size: 10px; color: #bbb; }
+.mk-tree-beta   {
+  font-size: 9px; font-weight: 700;
+  background: rgba(244,108,17,0.12); color: #b84f0f;
+  padding: 1px 5px; border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* Detail pane */
+.mk-detail { padding: 12px 14px; background: #fff; overflow: hidden; }
+
+.mk-node-head {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+}
+.mk-node-label {
+  font-weight: 700; font-size: 13px; color: #222;
+}
+.mk-badge {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; padding: 2px 6px; border-radius: 2px;
+}
+.mk-beta { background: rgba(244,108,17,0.12); color: #b84f0f; }
+
+.mk-iri { font-size: 10px; color: #aaa; margin-bottom: 10px; }
+
+.mk-section-label {
+  font-size: 9px; font-weight: 800; letter-spacing: 0.1em;
+  text-transform: uppercase; color: #999; margin-bottom: 4px;
+}
+
+.mk-field { font-size: 12px; color: #333; line-height: 1.5; margin-bottom: 10px; }
+
+.mk-divider { border: none; border-top: 1px solid #f0f0f0; margin: 8px 0; }
+
+.mk-comments-head {
+  font-size: 11px; font-weight: 700; color: #444; margin-bottom: 8px;
+}
+
+.mk-comment {
+  display: flex; gap: 8px; margin-bottom: 10px;
+}
+.mk-avatar {
+  width: 24px; height: 24px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.av-a { background: hsl(263 70% 58%); }
+.av-b { background: #32C39F; }
+.av-c { background: #F46C11; }
+
+.mk-comment-body { flex: 1; }
+.mk-comment-meta {
+  font-size: 10px; color: #888; margin-bottom: 3px;
+}
+.mk-comment-tag {
+  display: inline-block;
+  font-size: 9px; font-weight: 600;
+  background: rgba(34,74,167,0.1); color: var(--blue);
+  padding: 1px 5px; border-radius: 2px; margin-left: 4px;
+}
+.mk-comment-text { font-size: 11px; color: #444; line-height: 1.4; }
+
+/* Feed panel */
+.mk-feed-header {
+  background: hsl(263 70% 18%);
+  padding: 8px 12px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.mk-feed-title { font-size: 12px; font-weight: 700; color: #fff; }
+.mk-feed-close { color: rgba(255,255,255,0.5); cursor: pointer; font-size: 16px; }
+
+.mk-feed-item {
+  display: flex; gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  background: #fff;
+}
+.mk-feed-item.unread { background: rgba(99,65,197,0.04); border-left: 3px solid hsl(263 70% 58%); }
+
+.mk-feed-right { flex: 1; overflow: hidden; }
+.mk-feed-node { font-size: 11px; font-weight: 700; color: #333; margin-bottom: 3px; }
+.mk-feed-node span { font-size: 10px; color: #999; font-weight: 400; }
+.mk-feed-body { font-size: 11px; color: #555; line-height: 1.4; margin-bottom: 4px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.mk-feed-meta { font-size: 10px; color: #aaa; }
+
+/* ── Working group cards ── */
+.wg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.wg-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  border-top: 3px solid var(--teal);
+  padding: 22px 20px 20px;
+}
+
+.wg-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 12px;
+}
+
+.wg-chair-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gray-mid);
+  margin-bottom: 4px;
+}
+
+.wg-chair-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ── CTA strip ── */
+.cta-strip {
+  background: var(--blue);
+  padding: 60px 32px;
+  text-align: center;
+}
+
+.cta-strip h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.cta-strip p {
+  font-size: 17px;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 28px;
+}
+
+.cta-strip a { color: rgba(255,255,255,0.9); }
+.cta-strip a:hover { color: #fff; }
+
+.cta-buttons { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--orange);
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 100px;
+  padding: 12px 32px;
+  transition: background 0.15s;
+}
+.btn-primary:hover { background: var(--orange-hover); color: #fff; }
+
+/* ── Footer ── */
+/* Matches post-40.css: background-color: var(--e-global-color-secondary) = #224AA7 */
+.site-footer {
+  background: var(--blue);
+  padding: 48px 32px 0;
+  color: rgba(255,255,255,0.8);
+}
+
+.footer-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  padding-bottom: 40px;
+}
+
+.footer-brand img {
+  width: 170px;
+  height: auto;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.footer-brand p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.7);
+}
+
+.footer-col h4 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 14px;
+}
+
+.footer-col ul { list-style: none; padding: 0; }
+.footer-col li { margin-bottom: 8px; }
+.footer-col a {
+  font-size: 14px;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.8;
+  transition: color 0.15s;
+}
+.footer-col a:hover { color: var(--orange-bright); }
+
+.footer-bottom {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 20px 0;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+}
+
+.footer-bottom a { color: rgba(255,255,255,0.5); }
+.footer-bottom a:hover { color: rgba(255,255,255,0.8); }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .two-paths-inner,
+  .split-layout { grid-template-columns: 1fr; }
+  .split-layout.flip { direction: ltr; }
+  .lifecycle-notes { grid-template-columns: 1fr 1fr; }
+  .footer-inner { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 640px) {
+  .site-nav { display: none; }
+  .header-inner { padding: 12px 20px; }
+  .hero { padding: 60px 20px 52px; }
+  .lifecycle-notes { grid-template-columns: 1fr; }
+  .footer-inner { grid-template-columns: 1fr; gap: 28px; }
+  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+  .access-table { font-size: 13px; }
+  .access-table th, .access-table td { padding: 10px 10px; }
+  .mk-viewer { grid-template-columns: 1fr; }
+  .mk-tree { display: none; }
+}
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<!-- ══════════════════════════════════════════════════════════════
+     WP HEADER — static stand-in; replace with <?php get_header(); ?>
+     (Elementor header template ID 24 — post-24.css)
+══════════════════════════════════════════════════════════════ -->
+<header class="site-header">
+  <div class="header-inner">
+    <!-- Logo — dark version (header is white) -->
+    <a href="https://sali.org" aria-label="SALI Alliance home">
+      <img src="https://sali.org/wp-content/uploads/2026/02/SALI_Alliance_Logo_lg.png"
+           alt="SALI Alliance" style="width:170px;height:auto;display:block;">
+    </a>
+    <!-- Primary nav — Montserrat 14px 700 uppercase, #555A5A, hover #F46C11 -->
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="https://sali.org/">Home</a>
+      <a href="https://sali.org/membership/">Membership</a>
+      <a href="https://sali.org/community/">Community</a>
+      <a href="https://sali.org/explore-the-standard/">Explore the Standard</a>
+      <a href="#" class="nav-highlight">Explore V3</a>
+      <a href="https://sali.org/about/">About</a>
+      <a href="https://sali.org/contact/">Contact</a>
+    </nav>
+    <!-- CTA pill button — orange, 100px border-radius, Montserrat 14px 700 uppercase -->
+    <div class="header-cta">
+      <a href="https://v3.sali.org" class="btn-pill">Log In</a>
+    </div>
+  </div>
+</header>
+<!-- ══════════════════════════════════════════════════════════════
+     END WP HEADER
+══════════════════════════════════════════════════════════════ -->
+
+<!-- ══════════════════════════════════════════
+     HERO
+══════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-eyebrow">Documentation</div>
+  <h1>LMSS V3 Guide</h1>
+  <p class="hero-sub">Everything you need to participate in the V3 SALI taxonomy — from browsing the standard to contributing through working groups.</p>
+  <a href="https://v3.sali.org" class="btn-hero">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Open V3 LMSS Viewer
+  </a>
+</section>
+
+<!-- ══════════════════════════════════════════
+     TWO PATHS
+══════════════════════════════════════════ -->
+<div class="two-paths">
+  <div class="two-paths-inner">
+    <div class="path-card">
+      <div class="path-num">1</div>
+      <h2>Via the V3 LMSS Viewer</h2>
+      <p>The V3 LMSS Viewer is the public home of the V3 SALI taxonomy — a browsable, searchable interface where anyone can explore the standard, follow changes, and comment on proposals during open consultation periods. (LMSS V2 remains available at <a href="https://viewer.sali.org">viewer.sali.org</a>.)</p>
+    </div>
+    <div class="path-card">
+      <div class="path-num">2</div>
+      <h2>Via Working Groups</h2>
+      <p>Working groups are the governance backbone of LMSS. Open to SALI members, they meet regularly to review proposals, deliberate on contested nodes, and decide what enters each stable release.</p>
+    </div>
+  </div>
+</div>
+
+<main id="main">
+
+<!-- ══════════════════════════════════════════
+     PART 1 DIVIDER
+══════════════════════════════════════════ -->
+<div class="part-divider">
+  <div class="part-divider-inner">
+    <span class="part-num">Part 1</span>
+    <span class="part-title">The V3 LMSS Viewer</span>
+    <div class="part-rule"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ACCESS LEVELS
+══════════════════════════════════════════ -->
+<section class="section-stripe alt" id="access">
+  <div class="section-inner">
+    <div class="section-label sl-blue">Access</div>
+    <h2>Who can do what</h2>
+    <p class="section-intro">The V3 LMSS Viewer is open to everyone. Deeper participation — posting comments, editing nodes — is available through a simple request or working group appointment.</p>
+
+    <table class="access-table">
+      <thead>
+        <tr>
+          <th>Level</th>
+          <th>What you can do</th>
+          <th>How to get it</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="role-badge role-reader"><span class="role-dot"></span>Reader</span></td>
+          <td>Browse the full taxonomy, view node definitions and properties, search, download exports, and view the comments feed.</td>
+          <td><strong>No login required.</strong> Available to anyone — just open <a href="https://v3.sali.org">v3.sali.org</a>. (LMSS V2 remains at <a href="https://viewer.sali.org">viewer.sali.org</a>.)</td>
+        </tr>
+        <tr>
+          <td><span class="role-badge role-commenter"><span class="role-dot"></span>Commentator</span></td>
+          <td>Everything above, plus post comments on nodes during an RFC (Request for Comment) period.</td>
+          <td>Email <a href="mailto:info@sali.org">info@sali.org</a> to request access. Open to any SALI member or interested practitioner.</td>
+        </tr>
+        <tr>
+          <td><span class="role-badge role-editor"><span class="role-dot"></span>Editor</span></td>
+          <td>Everything above, plus create and edit nodes, propose withdrawals, and make structural changes. All edits are tracked with the editor's identity.</td>
+          <td>Appointed by a SALI working group.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="info-callout">
+      <p>The vast majority of users will interact with the LMSS Viewer as Readers — no account needed, no barriers. Commentator access is there if you want to engage directly in a consultation period.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     NODE LIFECYCLE
+══════════════════════════════════════════ -->
+<section class="section-stripe" id="lifecycle">
+  <div class="section-inner">
+    <div class="section-label sl-orange">The Standard</div>
+    <h2>Node lifecycle</h2>
+    <p class="section-intro">Every entry in the LMSS taxonomy moves through a defined lifecycle from initial proposal to stable release.</p>
+
+    <div class="lifecycle">
+      <div class="lc-step">
+        <div class="lc-node lc-beta">Beta</div>
+        <div class="lc-label">Beta</div>
+        <div class="lc-desc">New node, visible and usable</div>
+      </div>
+      <div class="lc-arrow">→</div>
+      <div class="lc-step">
+        <div class="lc-node lc-rfc">RFC<br>Period</div>
+        <div class="lc-label">RFC Open</div>
+        <div class="lc-desc">60-day comment window</div>
+      </div>
+      <div class="lc-arrow">→</div>
+      <div class="lc-step">
+        <div class="lc-node lc-accepted">Accepted</div>
+        <div class="lc-label">Accepted</div>
+        <div class="lc-desc">Stable release ready</div>
+      </div>
+      <div class="lc-arrow" style="color:transparent;">→</div>
+      <div class="lc-step" style="opacity:0.6">
+        <div class="lc-node lc-withdrawn">With-<br>drawn</div>
+        <div class="lc-label">Withdrawn</div>
+        <div class="lc-desc">Not accepted; removed</div>
+      </div>
+    </div>
+
+    <div class="lifecycle-notes">
+      <div class="lc-note">
+        <div class="lc-note-head"><span class="lc-note-badge nb-beta">Beta</span></div>
+        <p>A new node enters the taxonomy in Beta status — visible, searchable, and available for use. Beta indicates the node is a live proposal, not a final commitment. The majority of new V3 additions begin here.</p>
+      </div>
+      <div class="lc-note">
+        <div class="lc-note-head"><span class="lc-note-badge nb-rfc">RFC</span></div>
+        <p>For significant proposals, the working group opens a formal Request for Comment period — typically 60 days. A banner appears in the LMSS Viewer and commentators can post responses directly on the relevant nodes.</p>
+      </div>
+      <div class="lc-note">
+        <div class="lc-note-head"><span class="lc-note-badge nb-accepted">Accepted</span></div>
+        <p>After review, the working group accepts the node: the Beta label is removed and it enters the next annual stable release. Accepted nodes are the appropriate reference for production integrations.</p>
+      </div>
+      <div class="lc-note">
+        <div class="lc-note-head"><span class="lc-note-badge nb-withdrawn">Withdrawn</span></div>
+        <p>Nodes the working group decides not to accept are withdrawn — removed from the viewer and search. They are retained in an audit log and can be reinstated if circumstances change.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     RFC / COMMENTING
+══════════════════════════════════════════ -->
+<section class="section-stripe alt" id="rfc">
+  <div class="section-inner">
+    <div class="section-label sl-blue">Participation</div>
+    <h2>Commenting during an RFC</h2>
+    <p class="section-intro">When a Request for Comment period is open, the LMSS Viewer signals this prominently and invites structured community input on the nodes under review.</p>
+
+    <div class="prose" style="max-width:720px;margin-bottom:36px;">
+      <p>A banner appears across the top of the V3 LMSS Viewer showing the RFC title, a brief description of what is under review, and the comment deadline. Nodes in scope show a comment section directly in their detail panel.</p>
+
+      <h3>How to participate</h3>
+      <ul>
+        <li>Log in with a Commentator account — or email <a href="mailto:info@sali.org">info@sali.org</a> to request one.</li>
+        <li>Navigate to any node within the scope of the RFC.</li>
+        <li>Use the <strong>Add Comment</strong> function to post your input, selecting whether it applies to the label, definition, parent classification, or the node generally.</li>
+        <li>Comments are immediately visible to all users and to the working group.</li>
+      </ul>
+
+      <p>You do not need to attend a working group meeting for your comment to be considered. The group reads all submissions before reaching a decision.</p>
+
+      <div class="info-callout">
+        <p><strong>No account?</strong> You can still read all existing comments on any node without logging in. Only posting requires a Commentator account.</p>
+      </div>
+    </div>
+
+    <div style="max-width:780px;">
+      <div class="mockup-wrap">
+          <div class="mockup-chrome">
+            <div class="chrome-dot r"></div><div class="chrome-dot y"></div><div class="chrome-dot g"></div>
+            <div class="chrome-url">v3.sali.org</div>
+          </div>
+          <div class="mk-toolbar">
+            <div class="mk-tb-logo">
+              <img class="mk-tb-logo-img" src="https://sali.org/wp-content/uploads/2026/02/SALI_Alliance_Logo_Reverse.png" alt="" onerror="this.style.display='none'">
+              <span class="mk-tb-appname">LMSS Viewer</span>
+            </div>
+            <span class="mk-tb-branch">Branch: V3-beta</span>
+            <span class="mk-tb-select">All Categories ▾</span>
+            <span class="mk-tb-btn">Download</span>
+            <div class="mk-tb-search">
+              <span class="mk-tb-search-input">Search nodes…</span>
+              <span class="mk-tb-search-btn">Search</span>
+            </div>
+            <span class="mk-tb-btn">Edit Log</span>
+            <span class="mk-tb-btn">V2 → V3 Log</span>
+            <span class="mk-tb-btn active">Comments <span class="mk-tb-badge">4</span></span>
+          </div>
+          <div class="mk-rfc-banner">
+            <span class="mk-rfc-open">◆ RFC Open</span>
+            <span class="mk-rfc-title">LMSS V3 Draft — Review proposed taxonomy changes and submit your feedback.</span>
+            <span class="mk-rfc-chips">
+              <span class="mk-rfc-chip">Industry and Market</span>
+              <span class="mk-rfc-chip">Area of Law</span>
+            </span>
+            <span class="mk-rfc-deadline">Comment period closes <strong>10 May 2026</strong> — 3 weeks left</span>
+            <span class="mk-rfc-x">×</span>
+          </div>
+          <div class="mk-viewer">
+            <div class="mk-tree">
+              <div class="mk-tree-header">Class Hierarchy</div>
+              <div class="mk-tree-item mk-tree-indent-1">
+                <span class="mk-tree-toggle">▾</span>
+                <span class="mk-tree-name">Finance &amp; Insurance</span>
+                <span class="mk-tree-count">(8)</span>
+              </div>
+              <div class="mk-tree-item mk-tree-indent-2">
+                <span class="mk-tree-toggle">▾</span>
+                <span class="mk-tree-name">Portfolio Mgmt &amp; Inv. Advice</span>
+                <span class="mk-tree-count">(5)</span>
+              </div>
+              <div class="mk-tree-item mk-tree-indent-3">
+                <span class="mk-tree-toggle"> </span>
+                <span class="mk-tree-name">Portfolio Mgmt &amp; Inv. Advice</span>
+                <span class="mk-tree-count">(4)</span>
+              </div>
+              <div class="mk-tree-item mk-tree-indent-4 active">
+                <span class="mk-tree-toggle"> </span>
+                <span class="mk-tree-name">Food Manufacturing</span>
+                <span class="mk-tree-beta">Beta</span>
+              </div>
+              <div class="mk-tree-item mk-tree-indent-4">
+                <span class="mk-tree-toggle"> </span>
+                <span class="mk-tree-name">Beverage Mfg</span>
+                <span class="mk-tree-beta">Beta</span>
+              </div>
+              <div class="mk-tree-item mk-tree-indent-2">
+                <span class="mk-tree-toggle">▸</span>
+                <span class="mk-tree-name">Investment Banking</span>
+                <span class="mk-tree-count">(2)</span>
+              </div>
+              <div class="mk-tree-item mk-tree-indent-1">
+                <span class="mk-tree-toggle">▸</span>
+                <span class="mk-tree-name">Information Industry</span>
+                <span class="mk-tree-count">(12)</span>
+              </div>
+            </div>
+            <div class="mk-detail">
+              <div class="mk-node-head">
+                <span class="mk-node-label">Food Manufacturing</span>
+                <span class="mk-badge mk-beta">Beta</span>
+              </div>
+              <div class="mk-iri">http://lmss.sali.org/R4xF9wKmPq…</div>
+              <div class="mk-section-label">Definition</div>
+              <div class="mk-field">Establishments primarily engaged in manufacturing food products for human or animal consumption. Corresponds to NAICS sector 311.</div>
+              <hr class="mk-divider">
+              <div class="mk-comments-head">Comments (2)</div>
+              <div class="mk-comment">
+                <div class="mk-avatar av-a">SC</div>
+                <div class="mk-comment-body">
+                  <div class="mk-comment-meta"><strong>Sarah Chen</strong> · 3 days ago <span class="mk-comment-tag">Definition</span></div>
+                  <div class="mk-comment-text">NAICS 311 includes beverage manufacturing — should we split or keep combined as NAICS does?</div>
+                </div>
+              </div>
+              <div class="mk-comment">
+                <div class="mk-avatar av-b">MW</div>
+                <div class="mk-comment-body">
+                  <div class="mk-comment-meta"><strong>Marcus Webb</strong> · 1 day ago <span class="mk-comment-tag">General</span></div>
+                  <div class="mk-comment-text">Keeping alignment with NAICS 311 makes cross-referencing simpler for our workflows.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <p style="font-size:12px;color:var(--gray-mid);margin-top:8px;">V3 LMSS Viewer — RFC banner and node comment thread</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     COMMENTS FEED
+══════════════════════════════════════════ -->
+<section class="section-stripe" id="feed">
+  <div class="section-inner">
+    <div class="section-label sl-teal">Discovery</div>
+    <h2>The Comments Feed</h2>
+    <p class="section-intro">The Comments Feed surfaces all discussions across the taxonomy in one place — useful for following active consultations without navigating node by node.</p>
+
+    <div class="split-layout flip">
+      <div class="prose">
+        <p>The <strong>Comments</strong> button in the LMSS Viewer toolbar opens the Comments Feed — a reverse-chronological list of all comments across all nodes, with a direct link from each entry to the relevant node.</p>
+
+        <p>The feed is visible to everyone without login. Comments posted since your last visit are highlighted so you can quickly spot new activity.</p>
+
+        <p>For working group participants and editors, the feed is the fastest way to stay across community input during an active RFC period without visiting every affected node individually.</p>
+      </div>
+
+      <div>
+        <div class="mockup-wrap">
+          <div class="mockup-chrome">
+            <div class="chrome-dot r"></div><div class="chrome-dot y"></div><div class="chrome-dot g"></div>
+            <div class="chrome-url">v3.sali.org</div>
+          </div>
+          <div class="mk-toolbar">
+            <div class="mk-tb-logo">
+              <img class="mk-tb-logo-img" src="https://sali.org/wp-content/uploads/2026/02/SALI_Alliance_Logo_Reverse.png" alt="" onerror="this.style.display='none'">
+              <span class="mk-tb-appname">LMSS Viewer</span>
+            </div>
+            <span class="mk-tb-branch">Branch: V3-beta</span>
+            <span class="mk-tb-spacer"></span>
+            <span class="mk-tb-btn">Edit Log</span>
+            <span class="mk-tb-btn">V2 → V3 Log</span>
+            <span class="mk-tb-btn active">Comments <span class="mk-tb-badge">2</span></span>
+          </div>
+          <div class="mk-feed-header">
+            <span class="mk-feed-title">Comments Feed</span>
+            <span class="mk-feed-close">×</span>
+          </div>
+          <div class="mk-feed-item unread">
+            <div class="mk-avatar av-c" style="flex-shrink:0;">RP</div>
+            <div class="mk-feed-right">
+              <div class="mk-feed-node">Vertical SaaS <span>· Label</span></div>
+              <div class="mk-feed-body">Should fintech companies providing regulated payment services sit here or under Investment Banking? The line gets blurry for companies like Stripe.</div>
+              <div class="mk-feed-meta">Rachel Park · 2 hours ago</div>
+            </div>
+          </div>
+          <div class="mk-feed-item unread">
+            <div class="mk-avatar av-a" style="flex-shrink:0;">SC</div>
+            <div class="mk-feed-right">
+              <div class="mk-feed-node">Food Manufacturing <span>· Definition</span></div>
+              <div class="mk-feed-body">NAICS 311 includes beverage manufacturing — should we split or keep combined as NAICS does?</div>
+              <div class="mk-feed-meta">Sarah Chen · 3 days ago</div>
+            </div>
+          </div>
+          <div class="mk-feed-item">
+            <div class="mk-avatar av-b" style="flex-shrink:0;">MW</div>
+            <div class="mk-feed-right">
+              <div class="mk-feed-node">Food Manufacturing <span>· General</span></div>
+              <div class="mk-feed-body">Keeping alignment with NAICS 311 makes cross-referencing much simpler for our workflows.</div>
+              <div class="mk-feed-meta">Marcus Webb · 3 days ago</div>
+            </div>
+          </div>
+          <div class="mk-feed-item">
+            <div class="mk-avatar av-c" style="flex-shrink:0;">RP</div>
+            <div class="mk-feed-right">
+              <div class="mk-feed-node">Crypto Brokerage / Digital Asset Exchange <span>· Parent</span></div>
+              <div class="mk-feed-body">Coinbase is classified under NAICS 523210 by CapIQ — good to confirm our placement aligns with how firms already tag them.</div>
+              <div class="mk-feed-meta">Rachel Park · 5 days ago</div>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--gray-mid);margin-top:8px;text-align:center;">Comments Feed — newest first, unread items highlighted</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     RELEASES
+══════════════════════════════════════════ -->
+<section class="section-stripe alt" id="releases">
+  <div class="section-inner">
+    <div class="section-label sl-orange">Releases</div>
+    <h2>Stable releases and the edit log</h2>
+    <p class="section-intro">The LMSS Viewer tracks two states: the live Beta branch, updated continuously, and annual stable releases for production use.</p>
+
+    <div class="split-layout">
+      <div class="prose">
+        <h3>Annual stable releases</h3>
+        <p>Stable releases are point-in-time snapshots of all accepted nodes, published in Excel, JSON, and CSV. These are the appropriate reference for production integrations that need a fixed, versioned target.</p>
+
+        <h3>The live taxonomy</h3>
+        <p>The LMSS Viewer always reflects the current Beta branch — updated in real time as editors make changes and nodes are promoted. Vendors and firms who need access to new nodes before the next release can track this directly.</p>
+
+        <h3>Edit Log and V2 → V3 Log</h3>
+        <p>The <strong>Edit Log</strong> in the toolbar shows a running record of all changes: nodes added, labels updated, parents moved, nodes withdrawn, and definitions edited — with timestamps and the identity of the editor who made each change.</p>
+        <p>The <strong>V2 → V3 Log</strong> is a downloadable Excel report documenting every change between LMSS Version 2 and the current Version 3, useful for firms migrating from V2.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;padding-top:32px;">
+        <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;border-left:4px solid var(--teal);">
+          <div style="font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#1d9070;margin-bottom:6px;">Stable Release</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:16px;font-weight:800;color:var(--navy);margin-bottom:4px;">LMSS Version 2.0</div>
+          <div style="font-size:14px;color:var(--text-secondary);">10,000+ accepted nodes · Excel, JSON, CSV</div>
+          <div style="font-size:12px;color:var(--gray-mid);margin-top:8px;">Released 2024 · Versioned, production-safe</div>
+        </div>
+        <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;border-left:4px solid var(--orange);">
+          <div style="font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#c25208;margin-bottom:6px;">Beta Branch</div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:16px;font-weight:800;color:var(--navy);margin-bottom:4px;">LMSS Version 3.0 Beta</div>
+          <div style="font-size:14px;color:var(--text-secondary);">18,000+ nodes including beta proposals · Being released in categories over Q2 2026</div>
+          <div style="font-size:12px;color:var(--gray-mid);margin-top:8px;">Live at <a href="https://v3.sali.org" style="color:var(--blue-text);">v3.sali.org</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     PART 2 DIVIDER
+══════════════════════════════════════════ -->
+<div class="part-divider">
+  <div class="part-divider-inner">
+    <span class="part-num">Part 2</span>
+    <span class="part-title">Working Groups</span>
+    <div class="part-rule"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     WORKING GROUPS
+══════════════════════════════════════════ -->
+<section class="section-stripe" id="working-groups">
+  <div class="section-inner">
+    <div class="section-label sl-teal">Governance</div>
+    <h2>Contributing through working groups</h2>
+    <p class="section-intro">Working groups are the primary mechanism through which the taxonomy evolves. They meet regularly to review proposals, manage RFC periods, and decide what enters each stable release.</p>
+
+    <div class="prose" style="max-width:700px;margin-bottom:40px;">
+      <p>Working group participation is open to SALI members. Members with sufficient domain expertise may be appointed as Editors, giving them the ability to propose and edit nodes in the LMSS Viewer directly.</p>
+      <p>To join a working group, contact <a href="mailto:info@sali.org">info@sali.org</a> or reach out directly to the working group chair.</p>
+    </div>
+
+    <div class="wg-grid">
+      <div class="wg-card">
+        <div class="wg-name">Area of Law</div>
+        <div class="wg-chair-label">Chair</div>
+        <div class="wg-chair-name">Jim Hannigan</div>
+      </div>
+      <div class="wg-card">
+        <div class="wg-name">Industry and Market</div>
+        <div class="wg-chair-label">Chair</div>
+        <div class="wg-chair-name">Denis Anscomb</div>
+      </div>
+      <div class="wg-card">
+        <div class="wg-name">Fund</div>
+        <div class="wg-chair-label">Chair</div>
+        <div class="wg-chair-name">Patrick Dundas</div>
+      </div>
+      <div class="wg-card">
+        <div class="wg-name">In-House Legal</div>
+        <div class="wg-chair-label">Chair</div>
+        <div class="wg-chair-name">Toby Brown</div>
+      </div>
+      <div class="wg-card">
+        <div class="wg-name">Services</div>
+        <div class="wg-chair-label">Chair</div>
+        <div class="wg-chair-name">Jim Hannigan</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     CTA
+══════════════════════════════════════════ -->
+<div class="cta-strip">
+  <h2>Ready to explore V3?</h2>
+  <p>Open the V3 LMSS Viewer or get in touch at <a href="mailto:info@sali.org">info@sali.org</a> to request Commentator access.</p>
+  <div class="cta-buttons">
+    <a href="https://v3.sali.org" class="btn-primary">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Open V3 LMSS Viewer
+    </a>
+  </div>
+</div>
+
+</main>
+
+<!-- ══════════════════════════════════════════════════════════════
+     WP FOOTER — static stand-in; replace with <?php get_footer(); ?>
+     (Elementor footer template ID 40 — post-40.css)
+     Footer background: #224AA7 (--e-global-color-secondary)
+══════════════════════════════════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <!-- Reversed (white) logo on blue background -->
+      <img src="https://sali.org/wp-content/uploads/2026/02/SALI_Alliance_Logo_Reverse.png"
+           alt="SALI Alliance" onerror="this.style.display='none'">
+      <p>SALI Alliance<br>Standards for the legal industry.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Standard</h4>
+      <ul>
+        <li><a href="https://sali.org/explore-the-standard/">Explore the Standard</a></li>
+        <li><a href="https://v3.sali.org">V3 LMSS Viewer</a></li>
+        <li><a href="https://viewer.sali.org">V2 LMSS Viewer</a></li>
+        <li><a href="#">LMSS V3 Guide</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Organisation</h4>
+      <ul>
+        <li><a href="https://sali.org/membership/">Membership</a></li>
+        <li><a href="https://sali.org/community/">Community</a></li>
+        <li><a href="https://sali.org/about/">About</a></li>
+        <li><a href="https://sali.org/contact/">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:info@sali.org">info@sali.org</a></li>
+        <li><a href="https://www.linkedin.com/company/sali-alliance" target="_blank" rel="noopener">LinkedIn</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 SALI Alliance™ · 8700 W. Bryn Mawr Ave., Suite 610N, Chicago, IL 60631-4600</span>
+    <a href="https://sali.org/privacy-policy/">Privacy Policy</a>
+  </div>
+</footer>
+<!-- ══════════════════════════════════════════════════════════════
+     END WP FOOTER
+══════════════════════════════════════════════════════════════ -->
+
+</body>
+</html>
