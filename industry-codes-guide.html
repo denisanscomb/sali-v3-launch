@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SALI Industry Codes: Design Philosophy and Usage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* LMSS editor tokens */
+  --background:  hsl(0 0% 97%);
+  --foreground:  hsl(0 0% 9%);
+  --card:        hsl(0 0% 100%);
+  --secondary:   hsl(0 0% 96%);
+  --muted:       hsl(0 0% 93%);
+  --muted-fg:    hsl(220 9% 46%);
+  --border:      hsl(0 0% 88%);
+  --primary:     hsl(263 70% 58%);
+  --success:     hsl(142 72% 37%);
+  --warning:     hsl(38 92% 50%);
+  --radius:      2px;
+  --code:        hsl(263 56% 35%);
+
+  /* SALI brand palette */
+  --sali-blue:   #3b7ca9;
+  --sali-teal:   #3fa98b;
+  --sali-orange: #f39237;
+  --sali-gray:   #8c9bab;
+  --sali-navy:   #0d2137;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--foreground);
+  background: var(--background);
+}
+
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Page shell ── */
+.page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 28px 80px;
+}
+
+/* ── Top rule ── */
+.top-rule {
+  height: 3px;
+  background: linear-gradient(to right,
+    var(--sali-blue) 25%,
+    var(--sali-teal) 25% 50%,
+    var(--sali-orange) 50% 75%,
+    var(--sali-gray) 75%
+  );
+}
+
+/* ── Header ── */
+.doc-header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 28px;
+  align-items: start;
+  padding: 28px 0 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 36px;
+}
+
+.header-logo img {
+  height: 44px;
+  width: auto;
+  display: block;
+}
+
+.header-text {
+  padding-top: 2px;
+}
+
+.header-text .doc-type {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-fg);
+  margin-bottom: 6px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.header-text h1 {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  color: var(--sali-navy);
+  margin-bottom: 10px;
+}
+
+.header-meta {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--muted-fg);
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.meta-chip + .meta-chip {
+  margin-left: -1px;
+}
+
+.meta-chip:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+.meta-chip:last-child  { border-radius: 0 var(--radius) var(--radius) 0; }
+.meta-chip:only-child  { border-radius: var(--radius); }
+
+/* ── TOC ── */
+.toc {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  border-left: 3px solid var(--primary);
+  padding: 14px 18px;
+  margin-bottom: 40px;
+}
+
+.toc-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-fg);
+  margin-bottom: 10px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.toc-items {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.toc-items li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.toc-items .n {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--muted-fg);
+  min-width: 18px;
+}
+
+.toc-items a {
+  color: var(--foreground);
+  font-weight: 500;
+}
+
+.toc-items a:hover { color: var(--primary); text-decoration: none; }
+
+/* ── Sections ── */
+section {
+  margin-bottom: 44px;
+  padding-top: 8px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.section-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.s-summary  .section-dot { background: var(--sali-blue); }
+.s-usage    .section-dot { background: var(--sali-teal); }
+.s-construction .section-dot { background: var(--sali-orange); }
+.s-hierarchy    .section-dot { background: var(--primary); }
+
+h2 {
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  color: var(--sali-navy);
+  line-height: 1.3;
+}
+
+h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 24px 0 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--muted);
+  letter-spacing: -0.01em;
+}
+
+p {
+  color: #374151;
+  margin-bottom: 12px;
+  line-height: 1.65;
+}
+
+p:last-child { margin-bottom: 0; }
+
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--code);
+  background: hsl(263 56% 35% / 8%);
+  padding: 1px 5px;
+  border-radius: var(--radius);
+}
+
+/* ── Taxonomy trio ── */
+.taxonomy-trio {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 16px 0;
+}
+
+.tax-row {
+  display: grid;
+  grid-template-columns: 4px 32px 110px 1fr;
+  align-items: center;
+  gap: 0 12px;
+  padding: 10px 14px 10px 0;
+  background: var(--card);
+  border-bottom: 1px solid var(--muted);
+  font-size: 13px;
+}
+
+.tax-row:last-child { border-bottom: none; }
+
+.tax-accent { height: 100%; }
+.tax-row-industry .tax-accent  { background: var(--sali-blue); }
+.tax-row-law .tax-accent       { background: var(--sali-teal); }
+.tax-row-service .tax-accent   { background: var(--sali-orange); }
+
+.tax-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.tax-row-industry .tax-icon  { background: hsl(207 48% 43% / 12%); color: var(--sali-blue); }
+.tax-row-law .tax-icon       { background: hsl(163 48% 44% / 12%); color: var(--sali-teal); }
+.tax-row-service .tax-icon   { background: hsl(33 89% 57% / 12%);  color: var(--sali-orange); }
+
+.tax-name {
+  font-weight: 600;
+  color: var(--foreground);
+  font-size: 13px;
+}
+
+.tax-desc {
+  color: var(--muted-fg);
+  font-size: 12.5px;
+}
+
+/* ── Callout / note ── */
+.callout {
+  border-left: 3px solid var(--primary);
+  background: hsl(263 70% 58% / 5%);
+  padding: 12px 16px;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  margin: 16px 0;
+  font-size: 13.5px;
+  color: #2d1b69;
+  line-height: 1.6;
+}
+
+.callout-teal {
+  border-left-color: var(--sali-teal);
+  background: hsl(163 48% 44% / 6%);
+  color: #0d3d2e;
+}
+
+/* ── Beta badges — exactly matching the LMSS app ── */
+.beta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--foreground);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 5px 10px;
+  line-height: 1;
+}
+
+.beta-chip .badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: hsl(38 92% 50% / 15%);
+  color: var(--warning);
+  border: 1px solid hsl(38 92% 50% / 30%);
+  border-radius: var(--radius);
+  padding: 2px 5px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.beta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 14px 0;
+  padding: 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.beta-row-label {
+  width: 100%;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-fg);
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 4px;
+}
+
+/* ── NAICS tree — mimicking the LMSS tree component ── */
+.naics-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 16px 0;
+}
+
+.naics-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: var(--secondary);
+  border-bottom: 1px solid var(--border);
+}
+
+.naics-panel-header .title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-fg);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.naics-panel-header .subtitle {
+  font-size: 11px;
+  color: var(--muted-fg);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.tree-node {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 7px 14px;
+  border-bottom: 1px solid var(--muted);
+  font-size: 13px;
+  position: relative;
+}
+
+.tree-node:last-child { border-bottom: none; }
+
+.tree-node:hover { background: var(--secondary); }
+
+.tree-node.selected {
+  background: hsl(263 70% 58% / 6%);
+}
+
+.tree-node.selected::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--primary);
+}
+
+.tree-indent {
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.tree-chevron {
+  width: 14px;
+  height: 14px;
+  color: var(--muted-fg);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  margin-right: 4px;
+}
+
+.tree-node-label {
+  flex: 1;
+  color: var(--foreground);
+  font-weight: 400;
+}
+
+.tree-node.selected .tree-node-label {
+  font-weight: 600;
+  color: var(--sali-navy);
+}
+
+.tree-node-code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted-fg);
+  margin-left: 8px;
+}
+
+.tree-node.selected .tree-node-code {
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.tree-node-level {
+  font-size: 10px;
+  color: var(--muted-fg);
+  margin-left: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  white-space: nowrap;
+}
+
+/* ── Footer ── */
+.doc-footer {
+  border-top: 1px solid var(--border);
+  margin-top: 60px;
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.doc-footer img {
+  height: 24px;
+  width: auto;
+  opacity: 0.7;
+}
+
+.doc-footer .footer-text {
+  font-size: 11.5px;
+  color: var(--muted-fg);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── Print ── */
+@media print {
+  body { background: #fff; }
+  .top-rule { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  section { page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<div class="top-rule"></div>
+
+<div class="page">
+
+  <!-- Header -->
+  <header class="doc-header">
+    <div class="header-logo">
+      <img src="../LMSSeditor/frontend/static/SALI_logo.png"
+           onerror="this.src='https://sali.org/wp-content/uploads/2026/02/SALI_Alliance_Logo_lg.png'"
+           alt="SALI Alliance">
+    </div>
+    <div class="header-text">
+      <div class="doc-type">Legal Matter Standard Specification — v3.0 Beta</div>
+      <h1>SALI Industry Codes:<br>Design Philosophy and Usage</h1>
+      <div class="header-meta">
+        <span class="meta-chip">LMSS&nbsp;&nbsp;v3.0-beta</span>
+        <span class="meta-chip">April&nbsp;2026</span>
+        <span class="meta-chip">sali.org</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- TOC -->
+  <nav class="toc" aria-label="Contents">
+    <div class="toc-label">Contents</div>
+    <ul class="toc-items">
+      <li><span class="n">01</span><a href="#summary">Executive Summary</a></li>
+      <li><span class="n">02</span><a href="#usage">How Industry Codes Are Used</a></li>
+      <li><span class="n">03</span><a href="#construction">How the Codes Are Constructed</a></li>
+      <li><span class="n">04</span><a href="#hierarchy">The Hierarchical Structure</a></li>
+    </ul>
+  </nav>
+
+  <!-- 01 Executive Summary -->
+  <section id="summary" class="s-summary">
+    <div class="section-header">
+      <div class="section-dot"></div>
+      <h2>Executive Summary</h2>
+    </div>
+    <p>SALI Industry Codes are a structured vocabulary for classifying the industries of legal clients and matters. They are part of the Legal Matter Standard Specification (LMSS), a free open-source taxonomy maintained by the SALI Alliance.</p>
+    <p>Version 3 includes over 1,500 industry codes, with the expansion driven by working group feedback and a deliberate push toward the granularity that AI-assisted labeling makes practical for the first time. The codes are designed to be used alongside the SALI Area of Law and Service taxonomies to fully describe a legal matter.</p>
+  </section>
+
+  <!-- 02 How Industry Codes Are Used -->
+  <section id="usage" class="s-usage">
+    <div class="section-header">
+      <div class="section-dot"></div>
+      <h2>How Industry Codes Are Used</h2>
+    </div>
+    <p>Industry codes in SALI classify clients, not matters directly. A matter inherits its industry code from the client it serves. This distinction is intentional: the same client will appear across many matters over time, and a consistent industry classification at the client level is more reliable and easier to maintain than attempting to classify each matter independently.</p>
+    <p>In practice, the three SALI taxonomies work together to describe a matter:</p>
+
+    <div class="taxonomy-trio">
+      <div class="tax-row tax-row-industry">
+        <div class="tax-accent"></div>
+        <div class="tax-icon">&#9644;</div>
+        <div class="tax-name">Industry</div>
+        <div class="tax-desc">What sector the client operates in</div>
+      </div>
+      <div class="tax-row tax-row-law">
+        <div class="tax-accent"></div>
+        <div class="tax-icon">&#9646;</div>
+        <div class="tax-name">Area of Law</div>
+        <div class="tax-desc">The legal domain the work falls under</div>
+      </div>
+      <div class="tax-row tax-row-service">
+        <div class="tax-accent"></div>
+        <div class="tax-icon">&#9642;</div>
+        <div class="tax-name">Service</div>
+        <div class="tax-desc">The specific type of legal service being delivered</div>
+      </div>
+    </div>
+
+    <p>This three-taxonomy approach is by design. Early matter classification efforts in the industry often attempted to combine all three dimensions into a single scheme, producing codes like "Technology M&amp;A" or "Financial Services Litigation." These compound codes are hard to maintain, hard to aggregate, and break down quickly as clients and matters become more complex.</p>
+
+    <div class="callout callout-teal">
+      Keeping the three dimensions separate means each can be queried and analyzed independently. A firm can ask "what is our revenue from Healthcare clients?" without that question being entangled with area of law. The combination of all three produces a complete picture of a matter; each dimension is also independently useful.
+    </div>
+  </section>
+
+  <!-- 03 How the Codes Are Constructed -->
+  <section id="construction" class="s-construction">
+    <div class="section-header">
+      <div class="section-dot"></div>
+      <h2>How the Codes Are Constructed</h2>
+    </div>
+    <p>The Industry and Market taxonomy has two complementary components.</p>
+
+    <h3>Industry codes</h3>
+    <p>The Industry codes are derived from the North American Industry Classification System (NAICS), the most widely used industry classification standard in North America. NAICS is already embedded in much of the vendor data firms rely on, and its hierarchical structure maps well to the way lawyers naturally talk about sectors. The full NAICS code set is publicly available from the <a href="https://www.census.gov/naics/">U.S. Census Bureau</a>.</p>
+    <p>The SALI Industry codes follow the NAICS structure, running from broad sectors down to specific national industries. For example, <code>311821</code> Cookie and Cracker Manufacturing sits within <code>3118</code> Bakeries and Tortilla Manufacturing, within <code>311</code> Food Manufacturing, within sector <code>31</code> Manufacturing. Each level is a valid SALI code; the hierarchy is described in more detail below.</p>
+
+    <h3>Market Segment Attributes</h3>
+    <p>The Market Segment Attributes codes address a limitation of any supply-side classification: NAICS describes what a business produces, not how the legal market relates to it. Several distinctions that matter commercially to law firms are invisible at the NAICS level.</p>
+    <p>Consider <code>522110</code> Commercial Banking. From a NAICS perspective, a regional bank and a large national bank both fall under this code — both take deposits and make loans. From a law firm's perspective, they are typically served by different practice groups, operate under different regulatory regimes, and represent meaningfully different client relationships. The Market Segment Attributes codes introduce a Regional Bank node and a National Bank node to capture this distinction — nodes that sit alongside the NAICS-derived Industry codes in the same taxonomy and can be used independently or in combination.</p>
+
+    <h3>Legal market-specific granularity</h3>
+    <p>Several areas of the NAICS taxonomy are too coarse for the way law firms think about their clients. In these cases SALI V3 introduces more granular codes developed directly from working group feedback.</p>
+    <p>Investment management is a clear example. Under NAICS, most investment management activity falls under <code>523920</code> Portfolio Management — a single code covering hedge funds, mutual funds, pension funds, sovereign wealth funds, and similar vehicles. Law firms consistently distinguish between these client types: a hedge fund manager, a venture capital firm, a private equity fund, and a family office each carry different legal structures, different regulatory exposure, and different transaction profiles.</p>
+    <p>V3 addresses this by introducing dedicated codes for each. In the LMSS taxonomy viewer these appear as:</p>
+
+    <div class="beta-row">
+      <div class="beta-row-label">New in V3 — under review</div>
+      <div class="beta-chip">Hedge Fund Manager <span class="badge">Beta</span></div>
+      <div class="beta-chip">Venture Capital Firm <span class="badge">Beta</span></div>
+      <div class="beta-chip">Private Equity Fund <span class="badge">Beta</span></div>
+      <div class="beta-chip">Family Office <span class="badge">Beta</span></div>
+    </div>
+
+    <p>The Beta label indicates that these codes have been added to the taxonomy and are ready to use, but remain open for community review and refinement before they become part of the stable release. Working group members and registered users can comment on any Beta node directly in the viewer.</p>
+  </section>
+
+  <!-- 04 The Hierarchical Structure -->
+  <section id="hierarchy" class="s-hierarchy">
+    <div class="section-header">
+      <div class="section-dot"></div>
+      <h2>The Hierarchical Structure</h2>
+    </div>
+    <p>The SALI industry codes are organised as a hierarchy that follows the NAICS structure, running from two-digit sectors down to six-digit national industries. A firm can work at whatever level of granularity its data supports — highly specific where confidence and working group expertise justify it, or broader where a more aggregate classification is the right fit.</p>
+    <p>Every level of the hierarchy is a valid code. A firm does not need to classify at the most granular level to use SALI codes productively; it can classify at the level it has confidence in and refine over time.</p>
+
+    <div class="naics-panel">
+      <div class="naics-panel-header">
+        <span class="title">NAICS Hierarchy</span>
+        <span class="subtitle">Cookie and Cracker Manufacturing</span>
+      </div>
+
+      <div class="tree-node" style="padding-left:14px;">
+        <div class="tree-chevron">▾</div>
+        <span class="tree-node-label">Manufacturing</span>
+        <span class="tree-node-code">31</span>
+        <span class="tree-node-level">sector</span>
+      </div>
+
+      <div class="tree-node" style="padding-left:30px;">
+        <div class="tree-chevron">▾</div>
+        <span class="tree-node-label">Food Manufacturing</span>
+        <span class="tree-node-code">311</span>
+        <span class="tree-node-level">subsector</span>
+      </div>
+
+      <div class="tree-node" style="padding-left:46px;">
+        <div class="tree-chevron">▾</div>
+        <span class="tree-node-label">Bakeries and Tortilla Manufacturing</span>
+        <span class="tree-node-code">3118</span>
+        <span class="tree-node-level">industry group</span>
+      </div>
+
+      <div class="tree-node" style="padding-left:62px;">
+        <div class="tree-chevron">▾</div>
+        <span class="tree-node-label">Cookie, Cracker, and Pasta Manufacturing</span>
+        <span class="tree-node-code">31182</span>
+        <span class="tree-node-level">industry</span>
+      </div>
+
+      <div class="tree-node selected" style="padding-left:78px;">
+        <div class="tree-chevron">—</div>
+        <span class="tree-node-label">Cookie and Cracker Manufacturing</span>
+        <span class="tree-node-code">311821</span>
+        <span class="tree-node-level">national industry</span>
+      </div>
+    </div>
+
+    <p>A firm that works extensively in this space can classify matters at the <code>311821</code> Cookie and Cracker Manufacturing level. A firm with a broader food and beverage practice might work at <code>311</code> Food Manufacturing. Both produce useful, aggregable data — and both roll up naturally through the hierarchy for sector-level reporting.</p>
+
+    <div class="callout">
+      Matters tagged at any level within the food manufacturing branch can be aggregated to sector <code>31</code> Manufacturing for portfolio-wide views, or filtered to <code>311821</code> Cookie and Cracker Manufacturing for a targeted comparable-matter search. The hierarchy is what makes granular classification compatible with broad reporting.
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="doc-footer">
+    <img src="../LMSSeditor/frontend/static/SALI_logo.png"
+         onerror="this.src='https://sali.org/wp-content/uploads/2026/02/SALI_Alliance_Logo_lg.png'"
+         alt="SALI Alliance">
+    <span class="footer-text">LMSS v3.0-beta &nbsp;·&nbsp; April 2026 &nbsp;·&nbsp; sali.org</span>
+  </footer>
+
+</div>
+</body>
+</html>
