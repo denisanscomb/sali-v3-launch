@@ -170,6 +170,14 @@ a:hover { text-decoration: underline; }
   min-width: 18px;
 }
 
+.section-n {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted-fg);
+  font-weight: 400;
+  margin-right: 6px;
+}
+
 .toc-items a {
   color: var(--foreground);
   font-weight: 500;
@@ -534,7 +542,7 @@ code {
   <section id="summary" class="s-summary">
     <div class="section-header">
       <div class="section-dot"></div>
-      <h2>Executive Summary</h2>
+      <h2><span class="section-n">01</span>Executive Summary</h2>
     </div>
     <p>SALI Industry Codes are a structured vocabulary for classifying the industries of legal clients and matters. They are part of the Legal Matter Standard Specification (LMSS), a free open-source taxonomy maintained by the SALI Alliance.</p>
     <p>Version 3 includes over 1,500 industry codes, with the expansion driven by working group feedback and a deliberate push toward the granularity that AI-assisted labeling makes practical for the first time. The codes are designed to be used alongside the SALI Area of Law and Service taxonomies to fully describe a legal matter.</p>
@@ -544,7 +552,7 @@ code {
   <section id="usage" class="s-usage">
     <div class="section-header">
       <div class="section-dot"></div>
-      <h2>How Industry Codes Are Used</h2>
+      <h2><span class="section-n">02</span>How Industry Codes Are Used</h2>
     </div>
     <p>Industry codes in SALI classify clients, not matters directly. A matter inherits its industry code from the client it serves. This distinction is intentional: the same client will appear across many matters over time, and a consistent industry classification at the client level is more reliable and easier to maintain than attempting to classify each matter independently.</p>
     <p>In practice, the three SALI taxonomies work together to describe a matter:</p>
@@ -573,7 +581,7 @@ code {
     <p>This three-taxonomy approach is by design. Early matter classification efforts in the industry often attempted to combine all three dimensions into a single scheme, producing codes like "Technology M&amp;A" or "Financial Services Litigation." These compound codes are hard to maintain, hard to aggregate, and break down quickly as clients and matters become more complex.</p>
 
     <div class="callout callout-teal">
-      Keeping the three dimensions separate means each can be queried and analyzed independently. A firm can ask "what is our revenue from Healthcare clients?" without that question being entangled with area of law. The combination of all three produces a complete picture of a matter; each dimension is also independently useful.
+      Keeping the three dimensions separate means each can be queried and analyzed independently. A firm can ask "what is our revenue from Healthcare clients?" without that question being entangled with Area of Law. The combination of all three produces a complete picture of a matter; each dimension is also independently useful.
     </div>
   </section>
 
@@ -581,7 +589,7 @@ code {
   <section id="construction" class="s-construction">
     <div class="section-header">
       <div class="section-dot"></div>
-      <h2>How the Codes Are Constructed</h2>
+      <h2><span class="section-n">03</span>How the Codes Are Constructed</h2>
     </div>
     <p>The Industry and Market taxonomy has two complementary components.</p>
 
@@ -613,7 +621,7 @@ code {
   <section id="hierarchy" class="s-hierarchy">
     <div class="section-header">
       <div class="section-dot"></div>
-      <h2>The Hierarchical Structure</h2>
+      <h2><span class="section-n">04</span>The Hierarchical Structure</h2>
     </div>
     <p>The SALI industry codes are organised as a hierarchy that follows the NAICS structure, running from two-digit sectors down to six-digit national industries. A firm can work at whatever level of granularity its data supports — highly specific where confidence and working group expertise justify it, or broader where a more aggregate classification is the right fit.</p>
     <p>Every level of the hierarchy is a valid code. A firm does not need to classify at the most granular level to use SALI codes productively; it can classify at the level it has confidence in and refine over time.</p>
