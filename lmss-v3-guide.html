@@ -246,10 +246,20 @@ a:hover { color: var(--orange); text-decoration: none; }
 /* ══════════════════════════════════════════
    TWO-PATH INTRO
 ══════════════════════════════════════════ */
+.two-paths-heading {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0;
+  padding: 40px 32px 0;
+  background: var(--white);
+}
+
 .two-paths {
   background: var(--white);
   border-bottom: 1px solid var(--border);
-  padding: 56px 32px;
+  padding: 24px 32px 56px;
 }
 
 .two-paths-inner {
@@ -472,7 +482,7 @@ a:hover { color: var(--orange); text-decoration: none; }
 /* ── Lifecycle ── */
 .lifecycle {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   margin: 32px 0 40px;
   flex-wrap: wrap;
@@ -499,7 +509,8 @@ a:hover { color: var(--orange); text-decoration: none; }
 .lc-label { font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; color: var(--navy); }
 .lc-desc  { font-size: 11px; color: var(--text-secondary); text-align: center; max-width: 80px; }
 
-.lc-arrow { font-size: 20px; color: var(--border); align-self: flex-start; padding-top: 22px; }
+.lc-arrow { font-size: 20px; color: var(--border); align-self: flex-start; padding-top: 26px; }
+.lc-or    { font-size: 13px; font-style: italic; color: var(--text-secondary); padding-top: 30px; }
 
 .lifecycle-notes {
   display: grid;
@@ -1055,6 +1066,7 @@ a:hover { color: var(--orange); text-decoration: none; }
 <!-- ══════════════════════════════════════════
      TWO PATHS
 ══════════════════════════════════════════ -->
+<h2 class="two-paths-heading">Two ways to participate</h2>
 <div class="two-paths">
   <div class="two-paths-inner">
     <div class="path-card">
@@ -1113,7 +1125,7 @@ a:hover { color: var(--orange); text-decoration: none; }
         </tr>
         <tr>
           <td><span class="role-badge role-editor"><span class="role-dot"></span>Editor</span></td>
-          <td>Everything above, plus create and edit nodes, propose withdrawals, and make structural changes. All edits are tracked with the editor's identity.</td>
+          <td>Everything above, plus create and edit nodes, propose withdrawals, and make structural changes. All edits are tracked with the Editor's identity.</td>
           <td>Appointed by a SALI working group.</td>
         </tr>
       </tbody>
@@ -1152,7 +1164,7 @@ a:hover { color: var(--orange); text-decoration: none; }
         <div class="lc-label">Accepted</div>
         <div class="lc-desc">Stable release ready</div>
       </div>
-      <div class="lc-arrow" style="color:transparent;">→</div>
+      <div class="lc-arrow lc-or">or</div>
       <div class="lc-step" style="opacity:0.6">
         <div class="lc-node lc-withdrawn">With-<br>drawn</div>
         <div class="lc-label">Withdrawn</div>
@@ -1195,7 +1207,7 @@ a:hover { color: var(--orange); text-decoration: none; }
 
       <h3>How to participate</h3>
       <ul>
-        <li>Log in with a Commentator account — or email <a href="mailto:info@sali.org">info@sali.org</a> to request one.</li>
+        <li>Log in with a Commentator account (email <a href="mailto:info@sali.org">info@sali.org</a> to request one).</li>
         <li>Navigate to any node within the scope of the RFC.</li>
         <li>Use the <strong>Add Comment</strong> function to post your input, selecting whether it applies to the label, definition, parent classification, or the node generally.</li>
         <li>Comments are immediately visible to all users and to the working group.</li>
@@ -1325,7 +1337,7 @@ a:hover { color: var(--orange); text-decoration: none; }
 
         <p>The feed is visible to everyone without login. Comments posted since your last visit are highlighted so you can quickly spot new activity.</p>
 
-        <p>For working group participants and editors, the feed is the fastest way to stay across community input during an active RFC period without visiting every affected node individually.</p>
+        <p>For working group participants and Editors, the feed is the fastest way to stay updated across community input during an active RFC period without visiting every affected node individually.</p>
       </div>
 
       <div>
@@ -1403,10 +1415,10 @@ a:hover { color: var(--orange); text-decoration: none; }
         <p>Stable releases are point-in-time snapshots of all accepted nodes, published in Excel, JSON, and CSV. These are the appropriate reference for production integrations that need a fixed, versioned target.</p>
 
         <h3>The live taxonomy</h3>
-        <p>The LMSS Viewer always reflects the current Beta branch — updated in real time as editors make changes and nodes are promoted. Vendors and firms who need access to new nodes before the next release can track this directly.</p>
+        <p>The LMSS Viewer always reflects the current Beta branch — updated in real time as Editors make changes and nodes are promoted. Vendors and firms who need access to new nodes before the next release can track this directly.</p>
 
         <h3>Edit Log and V2 → V3 Log</h3>
-        <p>The <strong>Edit Log</strong> in the toolbar shows a running record of all changes: nodes added, labels updated, parents moved, nodes withdrawn, and definitions edited — with timestamps and the identity of the editor who made each change.</p>
+        <p>The <strong>Edit Log</strong> in the toolbar shows a running record of all changes: nodes added, labels updated, parents moved, nodes withdrawn, and definitions edited — with timestamps and the identity of the Editor who made each change.</p>
         <p>The <strong>V2 → V3 Log</strong> is a downloadable Excel report documenting every change between LMSS Version 2 and the current Version 3, useful for firms migrating from V2.</p>
       </div>
       <div style="display:flex;flex-direction:column;gap:16px;padding-top:32px;">
